@@ -287,7 +287,11 @@
   .hero { position: relative; background: radial-gradient(1200px 600px at 80% -10%, #2f4cf7 0%, var(--teal-700) 45%, var(--teal-900) 100%); color: #fff; overflow: hidden; padding: 70px 0 90px; }
   .hero::before { content:""; position:absolute; inset:0; background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.07) 1px, transparent 0); background-size: 26px 26px; opacity:.6; }
   .hero .wrap { position: relative; display: grid; grid-template-columns: 1.05fr .95fr; gap: 50px 50px; align-items: center; }
-  .hero-clinic-name { grid-column: 1 / -1; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: clamp(1.05rem, 2.3vw, 1.6rem); color: #fff; letter-spacing: .01em; padding-bottom: 22px; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,.2); }
+  .hero-clinic-name { grid-column: 1 / -1; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: clamp(1.5rem, 3.4vw, 2.45rem); color: #fff; letter-spacing: .005em; padding-bottom: 22px; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,.2); text-shadow: 0 1px 3px rgba(0,0,0,.28); }
+  .hero-clinic-name .cn-blue { color: #5aa0ff; }
+  .hero-clinic-name .cn-red { color: #ff4326; }
+  .hero-clinic-name .cn-yellow { color: #ffd23f; }
+  .hero-clinic-name .cn-white { color: #ffffff; }
   .hero-badge { display: inline-flex; align-items: center; gap: 9px; background: rgba(255,255,255,.13); border: 1px solid rgba(255,255,255,.2); padding: 7px 15px; border-radius: 999px; font-size: .82rem; font-weight: 600; margin-bottom: 22px; }
   .hero h1 { font-size: clamp(2.1rem, 5vw, 3.4rem); font-weight: 800; }
   .hero h1 .hl { color: var(--gold); }
@@ -491,7 +495,7 @@
 <!-- ============ HERO ============ -->
 <section class="hero">
   <div class="wrap">
-    <div class="hero-clinic-name">Klinik Perubatan Hijraa 24 Jam Dungun</div>
+    <div class="hero-clinic-name"><span class="cn-blue">Klinik Perubatan</span> <span class="cn-red">Hijraa</span> <span class="cn-yellow">24 Jam</span> <span class="cn-white">Dungun</span></div>
     <div>
       <span class="hero-badge">✦ <span data-i18n="hero_badge">Klinik Panel PERKESO &amp; PEKA B40</span></span>
       <h1><span data-i18n="hero_h1a">Klinik </span><span class="hl" data-i18n="hero_hl">24 Jam</span><span data-i18n="hero_h1b"> di Kuala Dungun</span></h1>
