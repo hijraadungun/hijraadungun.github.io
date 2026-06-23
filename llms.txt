@@ -39,7 +39,7 @@ PM Care, TNB, MiCare, e-MAS, Etiqa, HealthConnect, UiTM, PERKESO HSP, PEKA B40, 
 - Dr. Ziad bin Sabri (MMC 101468, MBBS UniKL)
 
 ## Links
-- Website: https://zarif05048.github.io/hijraa-website/
+- Website: https://hijraadungun.github.io/
 - Facebook: https://www.facebook.com/klinikhijraadungun/
 - Google Maps: https://www.google.com/maps?q=Klinik+Hijraa+24+Jam+Dungun
 - Hijraa Group: https://hijraagroup.com/cawangan/dungun/

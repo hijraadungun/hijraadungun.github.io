@@ -55,4 +55,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://zarif05048.github.io/hijraa-website/sitemap.xml
+Sitemap: https://hijraadungun.github.io/sitemap.xml
