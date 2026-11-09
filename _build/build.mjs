@@ -128,7 +128,7 @@ const SITES = {
     extraServices: [["Buka buku pink", "Antenatal booking"]],
     footAbout: ["Klinik perubatan 24 jam di Paka, Terengganu. Sebahagian daripada rangkaian Hijraa Group. Rawatan menyeluruh, mesra dan berpatutan untuk seluruh keluarga.",
       "A 24-hour medical clinic in Paka, Terengganu. Part of the Hijraa Group network. Comprehensive, friendly and affordable care for the whole family."],
-    social: [["facebook", "Facebook", "https://www.facebook.com/profile.php?id=61571780061977"],
+    social: [["facebook", "Facebook", "https://www.facebook.com/profile.php?id=61585001010235"],
       ["instagram", "Instagram", "https://www.instagram.com/hijraapaka"]],
     doctors: withDoctor(["SA", "Dr. Sakinah binti Aduka", "MD, UMS", "MMC 89172"]),
     areas: {
