@@ -20,7 +20,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
    at all on the page. The ID (G-…) is public by design: it appears in every
    tracked page's source. Besides page views and where visitors came from, the
    three buttons that matter are counted as events: call, chat, directions. */
-const GA_ID = "";
+const GA_ID = "G-ZXCQW8BCX3"; // property "Klinik Hijraa websites" (zarif05048@gmail.com), one stream for both sites
 
 function analytics() {
   if (!/^G-[A-Z0-9]{4,}$/.test(GA_ID)) return "";
