@@ -531,6 +531,35 @@ ul{margin:0;padding:0;list-style:none}
 .js .rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--d,0) * 70ms)}
 .js .rv.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}.js .rv{opacity:1;transform:none}}
+
+.svc-hero{padding:34px 0 8px;background:linear-gradient(180deg,var(--brand-50),#fff)}
+.crumbs{font-size:.85rem;color:var(--muted)}
+.crumbs a{color:var(--brand);font-weight:700}
+.svc-h1{margin-top:12px;font-size:clamp(1.9rem,6vw,3rem);font-weight:800;line-height:1.12;letter-spacing:-.02em;color:var(--navy)}
+.svc-lead{margin-top:14px;max-width:46rem;font-size:1.06rem;color:var(--body)}
+.svc-grid2{display:grid;gap:12px;margin-top:28px}
+@media(min-width:768px){.svc-grid2{grid-template-columns:1fr 1fr}}
+.inc{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px}
+.inc b{display:block;color:var(--navy)}
+.inc small{display:block;margin-top:2px;color:var(--muted);font-size:.9rem}
+.steps{display:grid;gap:12px;margin-top:28px;counter-reset:st}
+@media(min-width:768px){.steps{grid-template-columns:repeat(4,1fr)}}
+.step{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}
+.step::before{counter-increment:st;content:counter(st);display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--brand);color:#fff;font-weight:800;margin-bottom:10px}
+.step h3{font-size:1rem;font-weight:800}
+.step p{margin-top:4px;font-size:.9rem;color:var(--muted);line-height:1.45}
+.price-list{display:grid;gap:10px;margin-top:28px}
+.price-row{display:flex;justify-content:space-between;gap:16px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 18px}
+.price-row span:first-child{color:var(--navy);font-weight:600}
+.price-row .pr{font-weight:800;color:var(--brand);white-space:nowrap}
+.price-note{margin-top:16px;font-size:.92rem;color:var(--body)}
+.svc-links{display:grid;gap:12px;margin-top:22px}
+@media(min-width:768px){.svc-links{grid-template-columns:1fr 1fr}}
+.feat-link{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--brand-100);border-radius:18px;padding:16px 18px;font-weight:800;color:var(--navy);transition:border-color .2s,box-shadow .2s}
+.feat-link:hover{border-color:var(--brand-200);box-shadow:var(--shadow)}
+.feat-link .svc-ic{flex:none}
+.feat-link small{display:block;font-weight:600;color:var(--muted);font-size:.86rem}
+.feat-link > .ic:last-child{margin-left:auto;width:18px;height:18px;color:var(--brand)}
 </style>
 </head>
 <body>
@@ -715,6 +744,18 @@ ul{margin:0;padding:0;list-style:none}
       <span class="chip" data-en="Ear cleaning">Pembersihan telinga</span>
       <span class="chip" data-en="Family planning">Perancang keluarga</span>
       <span class="chip" data-en="Neonatal jaundice screening">Saringan jaundis bayi</span>
+    </div>
+    <div class="svc-links rv">
+      <a class="feat-link" href="turun-berat-badan/">
+        <span class="svc-ic"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg></span>
+        <span><span data-en="Weight-Loss Programme">Program Turun Berat Badan</span><small data-en="Doctor-led · Mounjaro &amp; Wegovy">Dipantau doktor · Mounjaro &amp; Wegovy</small></span>
+        <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg>
+      </a>
+      <a class="feat-link" href="pembedahan-kecil/">
+        <span class="svc-ic"><svg class="ic" aria-hidden="true"><use href="#i-shieldplus"/></svg></span>
+        <span><span data-en="Minor Surgery">Pembedahan Kecil</span><small data-en="Warts, cysts, lipomas, boils &amp; more">Ketuat, cyst, lipoma, bisul &amp; lain-lain</small></span>
+        <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg>
+      </a>
     </div>
   </div>
 </section>

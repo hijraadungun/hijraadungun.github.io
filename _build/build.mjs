@@ -9,7 +9,7 @@
 // The SEO part of each <head> (Search Console tag, meta, JSON-LD) lives in
 // head-dungun.html / head-paka.html and is inserted unchanged.
 // This folder starts with "_" so GitHub Pages (Jekyll) never publishes it.
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -241,7 +241,7 @@ ${analytics()}
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <script>document.documentElement.classList.add('js')</script>
-<style>${CSS}</style>
+<style>${CSS}${SVC_CSS}</style>
 </head>
 <body>
 <a class="skip" href="#main">${t("Langkau ke kandungan", "Skip to content")}</a>
@@ -378,6 +378,7 @@ ${sprite}
       ${t("Juga disediakan:", "Also available:", "span", 'class="also-l"')}
       ${ALSO.map(([m, e]) => t(m, e, "span", 'class="chip"')).join("\n      ")}
     </div>
+    ${serviceLinks(s)}
   </div>
 </section>
 
@@ -930,10 +931,403 @@ const JS = `
 })();
 `;
 
+/* ───────────────────────────── service pages ─────────────────────────────
+   One page per service the clinic is pushing (owner, 9 Nov 2026: "focus on
+   weight loss, minor surgery"), so Google can rank each clinic for "turun
+   berat badan Dungun", "buang ketuat Paka" and the like — a one-page site only
+   ranks for the clinic's own name. Same design, header, footer, chat links
+   and Google Analytics as the home page. Facts and price bands follow the
+   bots' clinic facts (team-crm src/lib/ai/knowledge.ts): advertised package
+   prices exact, every procedure an "anggaran" band. Patients say "cyst",
+   never "sista" (owner, 10 Nov 2026). Add a page = add an entry here. */
+
+const SERVICE_PAGES = (s) => [
+  {
+    slug: "turun-berat-badan",
+    icon: "pulse",
+    label: ["Program Turun Berat Badan", "Weight-Loss Programme"],
+    blurb: ["Dipantau doktor · Mounjaro & Wegovy", "Doctor-led · Mounjaro & Wegovy"],
+    title: `Program Turun Berat Badan ${s.town} — Mounjaro & Wegovy | ${s.name}`,
+    desc: `Program turun berat badan dipantau doktor di ${s.name}: pemeriksaan kesihatan, pelan pemakanan & senaman, dan suntikan Mounjaro atau Wegovy jika sesuai. Pakej bulanan & bayaran ansuran. Walk-in 24 jam.`,
+    kicker: ["Program Turun Berat Badan", "Weight-Loss Programme"],
+    h1: [`Turun berat badan dengan selamat, dipantau doktor di ${s.town}`, `Lose weight safely, with a doctor, in ${s.town}`],
+    lead: ["Program berstruktur yang menggabungkan pemeriksaan perubatan, pelan pemakanan, panduan senaman dan — jika sesuai selepas penilaian doktor — suntikan mingguan Mounjaro atau Wegovy. Kemajuan anda dipantau melalui aplikasi Hijraa.",
+      "A structured programme combining a medical check, a meal plan, exercise guidance and — when the doctor finds it suitable — a weekly Mounjaro or Wegovy injection. Your progress is tracked in the Hijraa app."],
+    includesTitle: ["Apa yang termasuk", "What's included"],
+    includes: [
+      [["Pemeriksaan perubatan menyeluruh", "berat, BMI, tekanan darah dan ujian darah jika perlu"], ["A full medical check", "weight, BMI, blood pressure and blood tests if needed"]],
+      [["Pelan pemakanan & senaman", "disesuaikan dengan gaya hidup anda"], ["A meal & exercise plan", "fitted to your daily life"]],
+      [["Suntikan Mounjaro atau Wegovy", "seminggu sekali, jika doktor dapati sesuai"], ["Mounjaro or Wegovy injections", "once a week, if the doctor finds it suitable"]],
+      [["Checkup berkala & pemantauan digital", "doktor laraskan dos ikut kemajuan anda"], ["Regular check-ups & digital tracking", "the doctor adjusts the dose to your progress"]],
+    ],
+    steps: [
+      [["Jumpa doktor", "Datang bila-bila masa — buka 24 jam, tiada temujanji diperlukan."], ["See a doctor", "Come any time — we're open 24 hours, no appointment needed."]],
+      [["Pelan peribadi", "Doktor nilai kesihatan anda dan pilih rawatan yang sesuai."], ["Your own plan", "The doctor assesses your health and picks the right treatment."]],
+      [["Suntikan mingguan", "Di klinik (pakej 4x sebulan) atau pen untuk suntik sendiri di rumah."], ["Weekly injection", "At the clinic (4-a-month package) or a pen to use at home."]],
+      [["Pantau & laras", "Checkup berkala; dos dinaikkan perlahan-lahan ikut keselesaan."], ["Track & adjust", "Regular check-ups; the dose rises slowly as you're comfortable."]],
+    ],
+    priceTitle: ["Harga", "Prices"],
+    prices: [
+      [["Mounjaro — sekali suntikan di klinik", "Mounjaro — single injection at the clinic"], ["dari RM250", "from RM250"]],
+      [["Mounjaro — pakej 4 suntikan sebulan (di klinik)", "Mounjaro — 4-injection monthly package (at the clinic)"], ["dari RM888", "from RM888"]],
+      [["Mounjaro Pen — 4 dos, suntik sendiri di rumah", "Mounjaro Pen — 4 doses, self-injected at home"], ["dari RM1,250", "from RM1,250"]],
+      [["Wegovy — sekali suntikan di klinik", "Wegovy — single injection at the clinic"], ["dari RM120", "from RM120"]],
+      [["Wegovy — pakej 4 suntikan sebulan (di klinik)", "Wegovy — 4-injection monthly package (at the clinic)"], ["dari RM450", "from RM450"]],
+      [["Wegovy Pen — 4 dos, suntik sendiri di rumah", "Wegovy Pen — 4 doses, self-injected at home"], ["dari RM800", "from RM800"]],
+    ],
+    priceNote: ["Harga ikut dos; dos ditentukan doktor selepas penilaian. Keempat-empat suntikan pakej bulanan dibuat di klinik. Bayaran ansuran: Atome (3 bulan, tanpa kad kredit), Shopee PayLater (hingga 6 bulan) atau Maybank Ezy Payment Plan (hingga 12 bulan).",
+      "Prices depend on the dose, which the doctor decides after assessing you. All four injections of a monthly package are given at the clinic. Instalments: Atome (3 months, no credit card), Shopee PayLater (up to 6 months) or Maybank Ezy Payment Plan (up to 12 months)."],
+    faqs: [
+      [["Perlukah temujanji?", "Tidak. Datang terus ke klinik bila-bila masa — kami buka 24 jam. Doktor akan menilai kesesuaian anda pada hari yang sama."],
+        ["Do I need an appointment?", "No. Walk in any time — we're open 24 hours. The doctor assesses whether it suits you on the same day."]],
+      [["Siapa yang sesuai untuk suntikan ini?", "Biasanya untuk dewasa yang berat badannya tinggi (BMI tinggi) atau ada masalah kesihatan berkaitan berat badan. Doktor akan menilai sejarah kesihatan anda dahulu. Ia tidak sesuai semasa hamil."],
+        ["Who is the injection suitable for?", "Usually adults with a high weight (high BMI) or weight-related health problems. The doctor checks your health history first. It is not suitable during pregnancy."]],
+      [["Ada kesan sampingan?", "Yang biasa ialah loya, cirit-birit, sembelit atau kembung perut, terutamanya pada minggu awal atau bila dos dinaikkan — biasanya berkurangan dalam beberapa hari. Jumpa doktor segera jika sakit perut teruk dan berterusan atau muntah teruk."],
+        ["Are there side effects?", "The common ones are nausea, diarrhoea, constipation or bloating, mostly in the first weeks or when the dose goes up — they usually ease within days. See a doctor at once for severe, persistent stomach pain or heavy vomiting."]],
+      [["Boleh suntik sendiri di rumah?", "Boleh, dengan Pen. Satu pen mengandungi 4 dos — bekalan sebulan, seminggu sekali. Pakej 4x sebulan pula disuntik di klinik."],
+        ["Can I inject at home?", "Yes, with a Pen. One pen holds 4 doses — a month's supply, once a week. The 4-a-month package is injected at the clinic."]],
+      [["Boleh bayar ansuran?", "Boleh — Atome, Shopee PayLater atau Maybank Ezy Payment Plan, dipilih semasa membayar di klinik."],
+        ["Can I pay in instalments?", "Yes — Atome, Shopee PayLater or Maybank Ezy Payment Plan, chosen when you pay at the clinic."]],
+    ],
+    cta: [["Mula hari ini", "Start today"], ["Chat dengan kami untuk tanya harga, kesesuaian atau masa terbaik untuk datang.", "Chat with us about prices, suitability or the best time to come in."]],
+  },
+  {
+    slug: "pembedahan-kecil",
+    icon: "shieldplus",
+    label: ["Pembedahan Kecil", "Minor Surgery"],
+    blurb: ["Ketuat, cyst, lipoma, bisul & lain-lain", "Warts, cysts, lipomas, boils & more"],
+    title: `Pembedahan Kecil ${s.town} — Buang Ketuat, Cyst, Lipoma | ${s.name}`,
+    desc: `Buang ketuat, tahi lalat, skin tag, cyst, lipoma, toreh bisul, kuku masuk isi dan chalazion oleh doktor di ${s.name}. Anggaran harga, tempah slot melalui chat, siap & balik hari yang sama.`,
+    kicker: ["Pembedahan Kecil", "Minor Surgery"],
+    h1: [`Buang ketuat, cyst & lipoma di ${s.town}`, `Wart, cyst & lipoma removal in ${s.town}`],
+    lead: ["Prosedur kecil oleh doktor kami dengan bius setempat — kebanyakannya siap dalam masa kurang sejam dan anda boleh pulang pada hari yang sama. Hantar gambar melalui chat untuk anggaran harga, kemudian tempah slot.",
+      "Small procedures by our doctors under local anaesthetic — most are done in under an hour and you go home the same day. Send a photo by chat for a price estimate, then book a slot."],
+    includesTitle: ["Prosedur yang kami buat", "Procedures we do"],
+    includes: [
+      [["Ketuat, tahi lalat & skin tag", "laser, rawatan beku (cryo) atau dibuang"], ["Warts, moles & skin tags", "laser, freezing (cryo) or removal"]],
+      [["Cyst, lipoma & ketumbuhan kecil", "dibuang dan dijahit kemas"], ["Cysts, lipomas & small lumps", "removed and neatly stitched"]],
+      [["Bisul / abses", "ditoreh dan nanah dikeluarkan"], ["Boils / abscesses", "opened and drained"]],
+      [["Kuku masuk isi", "cabut kuku penuh atau separa"], ["Ingrown toenails", "full or partial nail removal"]],
+      [["Chalazion & bintit (mata)", "dibuang oleh doktor"], ["Chalazion & stye (eyelid)", "removed by the doctor"]],
+      [["Ganglion & suntikan sendi", "sedut atau buang; suntikan lutut, bahu, tumit"], ["Ganglion & joint injections", "drained or removed; knee, shoulder, heel injections"]],
+    ],
+    steps: [
+      [["Chat & hantar gambar", "Ceritakan masalah dan hantar gambar — kami beri anggaran harga."], ["Chat & send a photo", "Tell us the problem and send a photo — we'll give a price estimate."]],
+      [["Tempah slot", "Prosedur dibuat pada slot doktor, jadi perlu ditempah dahulu."], ["Book a slot", "Procedures are done on a doctor's slot, so they need booking."]],
+      [["Prosedur", "Bius setempat; kebanyakannya siap kurang sejam."], ["The procedure", "Local anaesthetic; most take under an hour."]],
+      [["Rawatan susulan", "Cuci luka atau buka jahitan bila perlu."], ["Follow-up", "Wound dressing or stitch removal when needed."]],
+    ],
+    priceTitle: ["Anggaran harga", "Estimated prices"],
+    prices: [
+      [["Buang ketuat / tahi lalat (laser)", "Wart / mole removal (laser)"], ["~RM150 satu", "~RM150 each"]],
+      [["Rawatan beku ketuat (cryo)", "Wart freezing (cryo)"], ["~RM100 satu", "~RM100 each"]],
+      [["Buang cyst / ketumbuhan kecil", "Cyst / small lump removal"], ["~RM150–250", "~RM150–250"]],
+      [["Toreh bisul / abses", "Boil / abscess drainage"], ["~RM150–180", "~RM150–180"]],
+      [["Kuku masuk isi (buang kuku)", "Ingrown toenail (nail removal)"], ["~RM100–150", "~RM100–150"]],
+      [["Chalazion (ketumbuhan kelopak mata)", "Chalazion (eyelid lump)"], ["~RM280 semata", "~RM280 per eye"]],
+      [["Suntikan sendi / urat", "Joint / tendon injection"], ["~RM100–250", "~RM100–250"]],
+    ],
+    priceNote: ["Ini anggaran — harga sebenar disahkan doktor selepas melihat saiz dan jenis masalah. Lipoma dan skin tag ikut saiz dan bilangan. Bayaran tunai, kad, QR, ShopeePay atau Atome.",
+      "These are estimates — the doctor confirms the real price after seeing the size and type of the problem. Lipomas and skin tags depend on size and number. Pay by cash, card, QR, ShopeePay or Atome."],
+    faqs: [
+      [["Perlukah temujanji?", "Ya. Prosedur dibuat pada slot doktor, jadi chat dengan kami dahulu untuk menempah tarikh dan masa yang sesuai."],
+        ["Do I need an appointment?", "Yes. Procedures are done on a doctor's slot, so chat with us first to book a date and time that suits you."]],
+      [["Sakit tak?", "Kawasan itu dibius dahulu (bius setempat), jadi anda hanya rasa sedikit semasa suntikan bius. Doktor akan beri ubat tahan sakit jika perlu selepas prosedur."],
+        ["Does it hurt?", "The area is numbed first (local anaesthetic), so you only feel the numbing injection. The doctor gives painkillers afterwards if needed."]],
+      [["Berapa lama prosedur?", "Kebanyakan prosedur siap dalam masa kurang sejam dan anda boleh pulang pada hari yang sama."],
+        ["How long does it take?", "Most procedures are done in under an hour and you go home the same day."]],
+      [["Perlu buka jahitan?", "Kadang-kadang. Jika dijahit, anda kembali dalam 7–14 hari untuk buka jahitan (~RM4–7 sejahitan)."],
+        ["Will stitches need removing?", "Sometimes. If stitched, you come back in 7–14 days to have them removed (~RM4–7 per stitch)."]],
+      [["Boleh guna panel?", "Bergantung kepada panel anda. Hantar nama panel melalui chat dan staf kami akan sahkan."],
+        ["Can I use my panel?", "It depends on your panel. Send its name by chat and our staff will confirm."]],
+    ],
+    cta: [["Tempah slot anda", "Book your slot"], ["Chat dengan kami dan hantar gambar — kami beri anggaran harga dan tarikh yang sesuai.", "Chat with us and send a photo — we'll give a price estimate and a suitable date."]],
+  },
+];
+
+const SVC_CSS = `
+.svc-hero{padding:34px 0 8px;background:linear-gradient(180deg,var(--brand-50),#fff)}
+.crumbs{font-size:.85rem;color:var(--muted)}
+.crumbs a{color:var(--brand);font-weight:700}
+.svc-h1{margin-top:12px;font-size:clamp(1.9rem,6vw,3rem);font-weight:800;line-height:1.12;letter-spacing:-.02em;color:var(--navy)}
+.svc-lead{margin-top:14px;max-width:46rem;font-size:1.06rem;color:var(--body)}
+.svc-grid2{display:grid;gap:12px;margin-top:28px}
+@media(min-width:768px){.svc-grid2{grid-template-columns:1fr 1fr}}
+.inc{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px}
+.inc b{display:block;color:var(--navy)}
+.inc small{display:block;margin-top:2px;color:var(--muted);font-size:.9rem}
+.steps{display:grid;gap:12px;margin-top:28px;counter-reset:st}
+@media(min-width:768px){.steps{grid-template-columns:repeat(4,1fr)}}
+.step{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}
+.step::before{counter-increment:st;content:counter(st);display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--brand);color:#fff;font-weight:800;margin-bottom:10px}
+.step h3{font-size:1rem;font-weight:800}
+.step p{margin-top:4px;font-size:.9rem;color:var(--muted);line-height:1.45}
+.price-list{display:grid;gap:10px;margin-top:28px}
+.price-row{display:flex;justify-content:space-between;gap:16px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 18px}
+.price-row span:first-child{color:var(--navy);font-weight:600}
+.price-row .pr{font-weight:800;color:var(--brand);white-space:nowrap}
+.price-note{margin-top:16px;font-size:.92rem;color:var(--body)}
+.svc-links{display:grid;gap:12px;margin-top:22px}
+@media(min-width:768px){.svc-links{grid-template-columns:1fr 1fr}}
+.feat-link{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--brand-100);border-radius:18px;padding:16px 18px;font-weight:800;color:var(--navy);transition:border-color .2s,box-shadow .2s}
+.feat-link:hover{border-color:var(--brand-200);box-shadow:var(--shadow)}
+.feat-link .svc-ic{flex:none}
+.feat-link small{display:block;font-weight:600;color:var(--muted);font-size:.86rem}
+.feat-link > .ic:last-child{margin-left:auto;width:18px;height:18px;color:var(--brand)}
+`;
+
+/** Links to the service pages, for the home page's Services section. */
+const serviceLinks = (s, prefix = "") => `<div class="svc-links rv">
+      ${SERVICE_PAGES(s).map((p) => `<a class="feat-link" href="${prefix}${p.slug}/">
+        <span class="svc-ic">${ic(p.icon)}</span>
+        <span>${t(p.label[0], p.label[1])}${t(p.blurb[0], p.blurb[1], "small")}</span>
+        ${ic("arrow")}
+      </a>`).join("\n      ")}
+    </div>`;
+
+function servicePage(s, p) {
+  const url = `${s.url}${p.slug}/`;
+  const logo = (cls, h) => `<img class="${cls}" src="../logo-hijraa.png" width="${Math.round(h * 183 / 132)}" height="${h}" alt="${esc(s.name)}" />`;
+  const NAV = [["#services", "Perkhidmatan", "Services"], ["#doctors", "Doktor", "Doctors"], ["#panels", "Panel", "Panels"],
+    ["#faq", "Soalan Lazim", "FAQ"], ["#location", "Lokasi", "Location"]];
+  const year = new Date().getFullYear();
+  const ld = {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "MedicalWebPage", "@id": `${url}#page`, url, name: p.title, description: p.desc, inLanguage: "ms",
+        isPartOf: { "@id": `${s.url}#website` }, about: { "@type": "MedicalProcedure", name: p.label[0], alternateName: p.label[1] },
+        provider: { "@id": `${s.url}#clinic` } },
+      { "@type": "BreadcrumbList", itemListElement: [
+        { "@type": "ListItem", position: 1, name: s.name, item: s.url },
+        { "@type": "ListItem", position: 2, name: p.label[0], item: url } ] },
+      { "@type": "FAQPage", "@id": `${url}#faq`, mainEntity: p.faqs.map(([[q, a]]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
+    ],
+  };
+  return `<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<!-- Generated by _build/build.mjs in the hijraadungun.github.io repo — edit there and rebuild. -->
+<title>${esc(p.title)}</title>
+<meta name="description" content="${esc(p.desc)}" />
+<link rel="canonical" href="${url}" />
+<link rel="alternate" hreflang="ms" href="${url}" />
+<link rel="alternate" hreflang="en" href="${url}" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Hijraa ${s.branch}" />
+<meta property="og:title" content="${esc(p.title)}" />
+<meta property="og:description" content="${esc(p.desc)}" />
+<meta property="og:url" content="${url}" />
+<meta property="og:locale" content="ms_MY" />
+<meta property="og:image" content="${s.url}logo.jpg" />
+<script type="application/ld+json">${JSON.stringify(ld)}</script>
+${analytics()}
+<meta name="theme-color" content="#ffffff" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23ffffff'/><path d='M50 80C22 58 20 34 38 31c8-1.4 12 4.6 12 8 0-3.4 4-9.4 12-8 18 3 16 27-12 49Z' fill='%23d82b05'/></svg>" />
+<link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script>document.documentElement.classList.add('js')</script>
+<style>${CSS}${SVC_CSS}</style>
+</head>
+<body>
+<a class="skip" href="#main">${t("Langkau ke kandungan", "Skip to content")}</a>
+${sprite}
+
+<header class="hdr" id="hdr">
+  <div class="wrap hdr-in">
+    <a class="logo" href="${s.url}" aria-label="${esc(s.name)}">${logo("logo-img", 44)}</a>
+    <nav class="nav" aria-label="Utama">
+      ${NAV.map(([h, ms, en]) => t(ms, en, "a", `href="${s.url}${h}"`)).join("\n      ")}
+    </nav>
+    <div class="hdr-act">
+      <div class="lang" role="group" aria-label="Bahasa / Language">
+        <button type="button" data-lang="ms" aria-pressed="true">BM</button><button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="btn btn-brand hdr-call" href="tel:${s.tel}">${ic("phone")}${s.phone}</a>
+      <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menu">${ic("menu")}</button>
+    </div>
+  </div>
+</header>
+<div class="sheet" id="menu" hidden>
+  <nav aria-label="Menu">
+    <a class="sheet-link" href="${s.url}">${t("Laman utama", "Home")}${ic("arrow")}</a>
+    ${NAV.map(([h, ms, en]) => `<a class="sheet-link" href="${s.url}${h}">${t(ms, en)}${ic("arrow")}</a>`).join("\n    ")}
+  </nav>
+  <div class="sheet-cta">
+    <a class="btn btn-chat" href="${s.chat}">${ic("chat")}${t("Chat Kami", "Chat With Us")}</a>
+    <a class="btn btn-line" href="tel:${s.tel}">${ic("phone")}${t("Telefon", "Call")}</a>
+  </div>
+</div>
+
+<main id="main">
+
+<section class="svc-hero">
+  <div class="wrap">
+    <p class="crumbs"><a href="${s.url}">${esc(s.name)}</a> › ${t(p.label[0], p.label[1])}</p>
+    ${t(p.kicker[0], p.kicker[1], "span", 'class="eyebrow" style="margin-top:18px"')}
+    ${t(p.h1[0], p.h1[1], "h1", 'class="svc-h1"')}
+    ${t(p.lead[0], p.lead[1], "p", 'class="svc-lead"')}
+    <div class="cta-row" style="margin-top:22px">
+      <a class="btn btn-chat btn-lg" href="${s.chat}">${ic("chat")}${t("Chat Kami", "Chat With Us")}</a>
+      <a class="btn btn-line btn-lg" href="tel:${s.tel}">${ic("phone")}${s.phone}</a>
+    </div>
+    <ul class="proof" style="margin-top:22px">
+      <li><span class="stars" aria-hidden="true">${ic("star").repeat(5)}</span>${th(`<b>4.9</b> · ${s.reviews} ulasan Google`, `<b>4.9</b> · ${s.reviews} Google reviews`)}</li>
+      <li>${ic("badge")}${t("Doktor berdaftar MMC", "MMC-registered doctors")}</li>
+      <li>${ic("clock")}${t("Buka 24 jam", "Open 24 hours")}</li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-head rv">${t(p.includesTitle[0], p.includesTitle[1], "h2", 'class="h2"')}</div>
+    <div class="svc-grid2">
+      ${p.includes.map(([[bm, sm], [be, se]], n) => `<div class="inc rv" style="--d:${n % 4}"><span class="ck">${ic("check")}</span><span>${t(bm, be, "b")}${t(sm, se, "small")}</span></div>`).join("\n      ")}
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-soft">
+  <div class="wrap">
+    <div class="sec-head rv">${t("Bagaimana ia berjalan", "How it works", "h2", 'class="h2"')}</div>
+    <div class="steps">
+      ${p.steps.map(([[hm, pm], [he, pe]]) => `<div class="step rv">${t(hm, he, "h3")}${t(pm, pe, "p")}</div>`).join("\n      ")}
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-head rv">${t(p.priceTitle[0], p.priceTitle[1], "h2", 'class="h2"')}</div>
+    <div class="price-list">
+      ${p.prices.map(([[lm, le], [pm, pe]]) => `<div class="price-row rv">${t(lm, le)}${t(pm, pe, "span", 'class="pr"')}</div>`).join("\n      ")}
+    </div>
+    ${t(p.priceNote[0], p.priceNote[1], "p", 'class="price-note rv"')}
+  </div>
+</section>
+
+<section class="sec sec-soft" id="faq">
+  <div class="wrap faq-grid">
+    <div class="faq-side rv">
+      ${t("Soalan Lazim", "FAQ", "span", 'class="eyebrow"')}
+      ${t("Soalan yang kerap ditanya", "Frequently asked questions", "h2", 'class="h2"')}
+      <div class="ask">
+        ${t("Masih ada soalan?", "Still have a question?", "p", 'class="ask-t"')}
+        ${t("Chat dengan kami atau telefon — kami di sini 24 jam.", "Chat with us or call — we're here 24 hours.", "p", 'class="ask-s"')}
+        <div class="ask-cta">
+          <a class="btn btn-chat" href="${s.chat}">${ic("chat")}${t("Chat Kami", "Chat With Us")}</a>
+          <a class="btn btn-ghost-light" href="tel:${s.tel}">${ic("phone")}${t("Telefon", "Call")}</a>
+        </div>
+      </div>
+    </div>
+    <div class="faq-list">
+      ${p.faqs.map(([[qm, am], [qe, ae]], n) => `<details class="qa rv"${n === 0 ? " open" : ""}>
+        <summary>${t(qm, qe)}<span class="pm" aria-hidden="true">${ic("plus")}</span></summary>
+        ${t(am, ae, "div", 'class="faq-answer"')}
+      </details>`).join("\n      ")}
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <div class="cta-box rv">
+      ${t(p.cta[0][0], p.cta[0][1], "h2")}
+      ${t(p.cta[1][0], p.cta[1][1], "p")}
+      <div class="cta-row">
+        <a class="btn btn-chat btn-lg" href="${s.chat}">${ic("chat")}${t("Chat Kami", "Chat With Us")}</a>
+        <a class="btn btn-white btn-lg" href="tel:${s.tel}">${ic("phone")}${s.phone}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <span class="foot-logo">${logo("", 40)}</span>
+        ${t(s.footAbout[0], s.footAbout[1], "p", 'class="foot-about"')}
+        <div class="social">
+          ${s.social.map(([i, label, u]) => `<a href="${u}" target="_blank" rel="noopener" aria-label="${label}">${ic(i)}</a>`).join("\n          ")}
+          <a href="${s.chat}" aria-label="Chat">${ic("chat")}</a>
+          <a href="${s.maps}" target="_blank" rel="noopener" aria-label="Google Maps">${ic("pin")}</a>
+        </div>
+      </div>
+      <div>
+        ${t("Perkhidmatan", "Services", "h4")}
+        <ul>
+          ${SERVICE_PAGES(s).map((x) => `<li>${t(x.label[0], x.label[1], "a", `href="${s.url}${x.slug}/"`)}</li>`).join("\n          ")}
+          <li>${t("Semua perkhidmatan", "All services", "a", `href="${s.url}#services"`)}</li>
+        </ul>
+      </div>
+      <div>
+        ${t("Hubungi", "Contact", "h4")}
+        <ul>
+          <li><a href="tel:${s.tel}">${ic("phone")}${s.phone}</a></li>
+          <li><a href="${s.chat}">${ic("chat")}${t("Chat 24 jam", "24-hour chat")}</a></li>
+          <li><a href="${s.directions}" target="_blank" rel="noopener">${ic("nav")}${t("Arah ke klinik", "Directions")}</a></li>
+          <li><span>${ic("clock")}${t("Buka 24 jam setiap hari", "Open 24 hours every day")}</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="yr">${year}</span> ${s.name}${s.legal ? ` · ${s.legal}` : ""}. ${t("Hak cipta terpelihara.", "All rights reserved.")}</span>
+      ${t(s.address[0], s.address[1])}
+    </div>
+  </div>
+</footer>
+
+<nav class="mbar" aria-label="${esc("Tindakan pantas")}">
+  <a href="tel:${s.tel}">${ic("phone")}${t("Telefon", "Call")}</a>
+  <a class="mbar-chat" href="${s.chat}">${ic("chat")}${t("Chat Kami", "Chat")}</a>
+  <a href="${s.directions}" target="_blank" rel="noopener">${ic("nav")}${t("Arah", "Directions")}</a>
+</nav>
+<a class="fab" href="${s.chat}" aria-label="Chat">${ic("chat")}<span class="fab-tip">${t("Chat dengan kami", "Chat with us")}</span></a>
+
+<script>${JS}</script>
+</body>
+</html>
+`;
+}
+
+function sitemap(s) {
+  const today = new Date().toISOString().slice(0, 10);
+  const entry = (loc, priority) => `  <url>
+    <loc>${loc}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>${priority}</priority>
+    <xhtml:link rel="alternate" hreflang="ms" href="${loc}"/>
+    <xhtml:link rel="alternate" hreflang="en" href="${loc}"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="${loc}"/>
+  </url>`;
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${[entry(s.url, "1.0"), ...SERVICE_PAGES(s).map((p) => entry(`${s.url}${p.slug}/`, "0.8"))].join("\n")}
+</urlset>
+`;
+}
+
 /* ──────────────────────────────── build ──────────────────────────────── */
 
 for (const [key, s] of Object.entries(SITES)) {
   const html = page(s);
   writeFileSync(s.out, html);
   console.log(`${key}: ${s.out} (${(html.length / 1024).toFixed(1)} KB)`);
+  const root = dirname(s.out);
+  for (const p of SERVICE_PAGES(s)) {
+    mkdirSync(join(root, p.slug), { recursive: true });
+    const sp = servicePage(s, p);
+    writeFileSync(join(root, p.slug, "index.html"), sp);
+    console.log(`${key}: /${p.slug}/ (${(sp.length / 1024).toFixed(1)} KB)`);
+  }
+  writeFileSync(join(root, "sitemap.xml"), sitemap(s));
 }

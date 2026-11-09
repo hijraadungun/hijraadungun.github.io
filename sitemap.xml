@@ -3,11 +3,29 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://hijraadungun.github.io/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <lastmod>2026-11-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ms" href="https://hijraadungun.github.io/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://hijraadungun.github.io/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://hijraadungun.github.io/"/>
+  </url>
+  <url>
+    <loc>https://hijraadungun.github.io/turun-berat-badan/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ms" href="https://hijraadungun.github.io/turun-berat-badan/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://hijraadungun.github.io/turun-berat-badan/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://hijraadungun.github.io/turun-berat-badan/"/>
+  </url>
+  <url>
+    <loc>https://hijraadungun.github.io/pembedahan-kecil/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ms" href="https://hijraadungun.github.io/pembedahan-kecil/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://hijraadungun.github.io/pembedahan-kecil/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://hijraadungun.github.io/pembedahan-kecil/"/>
   </url>
 </urlset>
